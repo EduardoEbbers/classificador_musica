@@ -1,0 +1,135 @@
+<div *ngIf="editing" class="p-2">
+    <button class="btn btn-secondary m-1"
+        [routerLink]="['/form', 'edit', cifraModel.getPreviousCifraId(cifra.id) | async]">
+        Previous
+    </button>
+    <button class="btn btn-secondary m-1"
+        [routerLink]="['/form', 'edit', cifraModel.getNextCifraId(cifra.id) | async]">
+        Next
+    </button>
+</div>
+
+<form [formGroup]="cifraForm"
+    #form="ngForm"
+    (ngSubmit)="submitForm()">
+    <div class="form-group">
+        <label>Nome</label>
+        <input class="form-control" formControlName="nome" />
+        <ul class="text-danger list-unstyled mt-1">
+            <li *validationErrors="cifraForm; control:'nome'; let err">
+                {{err}}
+            </li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>Artista</label>
+        <!--
+        <input class="form-control" name="artista" [(ngModel)]="cifra.artista" required />
+        -->
+        <input class="form-control" formControlName="artista" />
+        <ul class="text-danger list-unstyled mt-1">
+            <li *validationErrors="cifraForm; control:'artista'; let err">
+                {{err}}
+            </li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>Concluido</label>
+        <!--
+        <input class="form-control" name="concluido" [(ngModel)]="cifra.concluido" required />
+        -->
+        <input class="form-control" formControlName="concluido" />
+        <ul class="text-danger list-unstyled mt-1">
+            <li *validationErrors="cifraForm; control:'concluido'; let err">
+                {{err}}
+            </li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>Baixado</label>
+        <!--
+        <input class="form-control" name="baixado" [(ngModel)]="cifra.baixado" required />
+        -->
+        <input class="form-control" formControlName="baixado" />
+        <ul class="text-danger list-unstyled mt-1">
+            <li *validationErrors="cifraForm; control:'baixado'; let err">
+                {{err}}
+            </li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>Comentarios</label>
+        <!--
+        <input class="form-control" name="comentarios" [(ngModel)]="cifra.comentarios" required />
+        -->
+        <input class="form-control" formControlName="comentarios" />
+        <ul class="text-danger list-unstyled mt-1">
+            <li *validationErrors="cifraForm; control:'comentarios'; let err">
+                {{err}}
+            </li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <input class="form-control" formControlName="price" [high]=300 [low]=10 />
+        <ul class="text-danger list-unstyled mt-1">
+            <li *validationErrors="cifraForm; control:'price'; let err">
+                {{err}}
+            </li>
+        </ul>
+    </div>
+    <ng-container formGroupName="details">
+        <div class="form-group">
+            <label>Supplier</label>
+            <input class="form-control" formControlName="supplier" />
+            <ul class="text-danger list-unstyled mt-1">
+                <li *validationErrors="cifraForm; control:'details.supplier'; label: 'supplier'; let err">
+                    {{err}}
+                </li>
+            </ul>
+        </div>
+        <ng-container formGroupName="keywords">
+            <button class="btn btn-sm btn-primary my-2"
+                (click)="addKeywordControl()"
+                type="button">
+                Add Keyword
+            </button>
+
+            <ul class="text-danger list-unstyled mt-1">
+                <li *validationErrors="cifraForm; control: 'details.keywords'; label: 'keywords'; let err">
+                    {{err}}
+                </li>
+            </ul>
+
+            <div class="form-group"
+                *ngFor="let c of keywordGroup.controls; let i = index; let count = count">
+                <label>Keyword {{i + 1}}</label>
+                <div class="input-group">
+                    <input class="form-control" [formControlName]="i" [value]="c.value" />
+                    <button class="btn btn-danger"
+                        type="button"
+                        *ngIf="count > 1"
+                        (click)="removeKeywordControl(i)">
+                        Delete
+                    </button>
+                </div>
+                <ul class="text-danger list-unstyled mt-1">
+                    <li *validationErrors="cifraForm; control: 'details.keywords.' + i; label: 'keyword'; let err">
+                        {{err}}
+                    </li>
+                </ul>
+
+            </div>
+        </ng-container>
+    </ng-container>
+    <div class="mt-2">
+        <button class="btn btn-primary"
+            [class.btn-warning]=editing
+            [disabled]="form.invalid">
+            {{editing ? 'Save' : 'Create'}}
+        </button>
+        <button class="btn btn-secondary m-1" 
+            type="button"
+            routerLink="/">Cancel</button>
+    </div>
+</form>

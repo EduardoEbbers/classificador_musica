@@ -1,0 +1,202 @@
+<!--
+    NAO APAGAR
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-auto">
+            <div class="d-grid gap-2">
+                <button class="btn btn-secondary" 
+                    routerLink="/" 
+                    routerLinkActive="bg-primary"
+                    [routerLinkActiveOptions]="{exact: true}">
+                    All
+                </button>
+                <button *ngFor="let artista of artistas"
+                    class="btn btn-secondary" 
+                    [routerLink]="['/table', artista]" 
+                    routerLinkActive="bg-primary">
+                    {{artista}}
+                </button>
+            </div>
+        </div>
+        <div class="col">
+            <button class="btn btn-info mx-1" routerLink="cifras">
+                Count Cifras
+            </button>
+            <button class="btn btn-primary mx-1" routerLink="artistas">
+                Count Artistas
+            </button>
+            <button class="btn btn-secondary mx-1" routerLink="/table">
+                Count Neither
+            </button>
+            
+            <div class="my-2">
+                <router-outlet></router-outlet>
+            </div>
+
+            <table class="table table-sm table-bordered table-striped">
+                <thead>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Artista</th>
+                    <th>Concluido</th>
+                    <th>Baixado</th>
+                    <th>Comentarios</th>
+                    <th>Price</th>
+                    <th>Details</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cifra of getCifras()">
+                        <td>{{cifra.id}}</td>
+                        <td>{{cifra.nome}}</td>
+                        <td>{{cifra.artista}}</td>
+                        <td>{{cifra.concluido}}</td>
+                        <td>{{cifra.baixado}}</td>
+                        <td>{{cifra.comentarios}}</td>
+                        <td>{{cifra.price | currency:"USD"}}</td>
+                        <td>
+                            <ng-container *ngIf="cifra.details else empty">
+                                {{cifra.details.supplier}}, {{cifra.details.keywords}}
+                            </ng-container>
+                            <ng-template #empty>(None)</ng-template>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-danger btn-sm m-1"
+                                (click)="deleteCifra(cifra.id)">
+                                Delete
+                            </button>
+                            <button class="btn btn-warning btn-sm"
+                                [routerLink]="['/form', 'edit', cifra.id]">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="p-2 text-white">
+    <button class="btn btn-primary m-1"
+        routerLink="/form/create">
+        Create New Cifra
+    </button>
+    <button class="btn btn-danger m-1"
+        (click)="deleteCifra(-1)">
+        Generate HTTP Error
+    </button>
+    <button class="btn btn-danger m-1"
+        routerLink="/does/not/exist">
+        Generate Routing Error
+    </button>
+    <button class="btn btn-danger"
+        routerLink="/ondemand">
+        Load Module
+    </button>
+</div>
+-->
+<!--
+<table class="table table-sm table-bordered table-striped">
+    <thead>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Artista</th>
+        <th>Concluido</th>
+        <th>Baixado</th>
+        <th>Comentarios</th>
+        <th>Price</th>
+        <th>Details</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let cifra of getCifras()">
+            <td>{{cifra.id}}</td>
+            <td>{{cifra.nome}}</td>
+            <td>{{cifra.artista}}</td>
+            <td>{{cifra.concluido}}</td>
+            <td>{{cifra.baixado}}</td>
+            <td>{{cifra.comentarios}}</td>
+            <td>{{cifra.price | currency:"USD"}}</td>
+            <td>
+                <ng-container *ngIf="cifra.details else empty">
+                    {{cifra.details.supplier}}, {{cifra.details.keywords}}
+                </ng-container>
+                <ng-template #empty>(None)</ng-template>
+            </td>
+            <td class="text-center">
+                <button mat-flat-button color="accent"
+                    (click)="deleteCifra(cifra.id)">
+                    Delete
+                </button>
+                <button mat-flat-button color="warn"
+                    [routerLink]="['/form', 'edit', cifra.id]">
+                    Edit
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="p-2 text-white">
+    <button mat-flat-button color="primary"
+        routerLink="/form/create">
+        Create New Cifra
+    </button>
+</div>
+-->
+
+<table mat-table [dataSource]="getCifras()" matSort>
+    <mat-text-column name="id"></mat-text-column>
+    <mat-text-column name="nome"></mat-text-column>
+    <mat-text-column name="artista"></mat-text-column>
+    <mat-text-column name="concluido"></mat-text-column>
+    <mat-text-column name="baixado"></mat-text-column>
+    <mat-text-column name="comentarios"></mat-text-column>
+    
+    <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+        <td mat-cell *matCellDef="let cifra">{{cifra.price | currency:"USD"}}</td>
+    </ng-container>
+    
+    <ng-container matColumnDef="details">
+        <th mat-header-cell *matHeaderCellDef>Details</th>
+        <td mat-cell *matCellDef="let cifra">
+            <ng-container *ngIf="cifra.details else empty">
+                {{cifra.details.supplier}}, {{cifra.details.keywords}}
+            </ng-container>
+            <ng-template #empty>(None)</ng-template>
+        </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="buttons">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let cifra">
+            <button mat-flat-button color="accent"
+                (click)="deleteCifra(cifra.id)">
+                Delete
+            </button>    
+            <button mat-flat-button color="warn"
+                [routerLink]="['/form', 'edit', cifra.id]">
+                Edit
+            </button> 
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="colsAndRows"></tr>
+    <tr mat-row *matRowDef="let row; columns: colsAndRows"></tr>
+</table>
+
+<mat-paginator [pageSize]="5" [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
+
+<div class="p-2 text-white">
+    <button mat-flat-button color="primary"
+        routerLink="/form/create">
+        Create New Cifra
+    </button>
+    
+    <customButton themeColor="primary" routerLink="/form/create">
+        Create New Cifra
+    </customButton>
+</div>
